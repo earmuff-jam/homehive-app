@@ -1,0 +1,166 @@
+import React from "react";
+
+import {
+  ApartmentRounded,
+  CottageRounded,
+  FlagCircleRounded,
+  QuestionAnswerRounded,
+  SettingsRounded,
+} from "@mui/icons-material";
+import {
+  FaqRoutePath,
+  PropertiesReportingPath,
+  PropertiesReportingRouteUri,
+  PropertiesRoutePath,
+  PropertiesRouteUri,
+  PropertyRoutePath,
+  PropertyRouteUri,
+  RentAppFaqRouteUri,
+  RentalRoutePath,
+  RentalRouteUri,
+  SettingsRoutePath,
+  SettingsRouteUri,
+} from "common/utils";
+import { Role } from "features/Auth/AuthHelper";
+
+const MyRental = React.lazy(
+  () => import("features/Rent/components/MyRental/MyRental"),
+);
+const Properties = React.lazy(
+  () => import("features/Rent/components/Properties/Properties"),
+);
+const Property = React.lazy(
+  () => import("features/Rent/components/Property/Property"),
+);
+const Settings = React.lazy(
+  () => import("features/Rent/components/Settings/Settings"),
+);
+
+const Reporting = React.lazy(
+  () => import("features/Rent/components/Reporting/Reporting"),
+);
+
+const Faq = React.lazy(() => import("features/Rent/components/Faq/Faq"));
+
+// RentalAppRoutes ...
+export const RentalAppRoutes = [
+  {
+    id: 1,
+    label: "My Properties",
+    path: PropertiesRoutePath,
+    routeUri: PropertiesRouteUri,
+    element: <Properties />,
+    icon: <CottageRounded fontSize="small" />,
+    config: {
+      breadcrumb: {
+        value: "My properties",
+        icon: <CottageRounded fontSize="small" />,
+      },
+      invalidRoles: [Role.Tenant],
+      isLoggedInFeature: true,
+      isProtectedBySubscriptionGuard: true,
+      displayInNavBar: true,
+      displayHelpSelector: true,
+      displayPrintSelector: false,
+    },
+  },
+  {
+    id: 2,
+    label: "My Rental Unit",
+    path: RentalRoutePath,
+    routeUri: RentalRouteUri,
+    element: <MyRental />,
+    icon: <ApartmentRounded fontSize="small" />,
+    config: {
+      breadcrumb: {
+        value: "My rental unit",
+        icon: <CottageRounded fontSize="small" />,
+      },
+      invalidRoles: [Role.Owner],
+      isLoggedInFeature: true,
+      isProtectedBySubscriptionGuard: true,
+      displayInNavBar: true,
+      displayHelpSelector: true,
+      displayPrintSelector: false,
+    },
+  },
+  {
+    id: 3,
+    label: "Reporting and Statistics",
+    path: PropertiesReportingPath,
+    routeUri: PropertiesReportingRouteUri,
+    element: <Reporting />,
+    icon: <FlagCircleRounded fontSize="small" />,
+    config: {
+      breadcrumb: {
+        value: "Reporting and Statistics",
+        icon: <FlagCircleRounded fontSize="small" />,
+      },
+      invalidRoles: [Role.Tenant],
+      isLoggedInFeature: true,
+      isProtectedBySubscriptionGuard: true,
+      displayInNavBar: true,
+      displayHelpSelector: true,
+      displayPrintSelector: false,
+    },
+  },
+  {
+    id: 4,
+    label: "Settings",
+    path: SettingsRoutePath,
+    routeUri: SettingsRouteUri,
+    element: <Settings />,
+    icon: <SettingsRounded fontSize="small" />,
+    config: {
+      breadcrumb: {
+        value: "My settings",
+        icon: <SettingsRounded fontSize="small" />,
+      },
+      invalidRoles: [],
+      isLoggedInFeature: true,
+      isProtectedBySubscriptionGuard: false,
+      displayInNavBar: true,
+      displayHelpSelector: true,
+      displayPrintSelector: false,
+    },
+  },
+  {
+    id: 5,
+    label: "My Property",
+    path: PropertyRoutePath,
+    routeUri: PropertyRouteUri,
+    element: <Property />,
+    icon: <CottageRounded fontSize="small" />,
+    config: {
+      breadcrumb: {
+        value: "My property",
+        icon: <CottageRounded fontSize="small" />,
+      },
+      invalidRoles: [],
+      isLoggedInFeature: true,
+      isProtectedBySubscriptionGuard: true,
+      displayInNavBar: false,
+      displayHelpSelector: true,
+      displayPrintSelector: false,
+    },
+  },
+  {
+    id: 6,
+    label: "Help Center",
+    path: FaqRoutePath,
+    routeUri: RentAppFaqRouteUri,
+    element: <Faq />,
+    icon: <QuestionAnswerRounded fontSize="small" />,
+    config: {
+      breadcrumb: {
+        value: "Invoice App Help Center",
+        icon: <QuestionAnswerRounded fontSize="small" />,
+      },
+      invalidRoles: [],
+      isProtectedBySubscriptionGuard: false,
+      displayInNavBar: true,
+      displayHelpSelector: false,
+      displayPrintSelector: false,
+    },
+  },
+];

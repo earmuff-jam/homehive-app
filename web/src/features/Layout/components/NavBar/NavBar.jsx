@@ -1,0 +1,188 @@
+import React from "react";
+
+import { useLocation, useNavigate } from "react-router-dom";
+
+import { ChevronLeftRounded, ChevronRightRounded } from "@mui/icons-material";
+import {
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import {
+  authorizedServerLevelFeatureFlags,
+  filterAuthorizedRoutesForNavBar,
+  isValidFeatureFlagsForRoutes,
+} from "common/ApplicationConfig";
+import {
+  MainEsignAppRouteUri,
+  MainInvoiceAppRouteUri,
+  MainRentAppRouteUri,
+  fetchLoggedInUser,
+} from "common/utils";
+import { EsignAppRoutes } from "features/Esign/Routes";
+import { InvoiceAppRoutes } from "features/Invoice/Routes";
+import NavigationGroup from "features/Layout/components/NavBar/NavigationGroup";
+import { buildChildrenRoutes } from "features/Layout/utils";
+import { RentalAppRoutes } from "features/Rent/Routes";
+import { MainAppRoutes } from "src/Routes";
+
+export default function NavBar({
+  openDrawer,
+  handleDrawerClose,
+  smScreenSizeAndHigher,
+  lgScreenSizeAndHigher,
+}) {
+  const theme = useTheme();
+  const navigate = useNavigate();
+
+  const user = fetchLoggedInUser();
+  const { pathname } = useLocation();
+
+  // the timeout allows to close the drawer first before navigation occurs.
+  // Without this, the drawer behaves weird.
+  const handleMenuItemClick = (to) => {
+    !lgScreenSizeAndHigher && handleDrawerClose();
+    setTimeout(() => {
+      navigate(to);
+    }, 200);
+  };
+
+  return (
+    <Stack>
+      <Drawer
+        variant="persistent"
+        open={openDrawer}
+        onClose={handleDrawerClose}
+        aria-modal="true"
+        slotProps={{
+          paper: smScreenSizeAndHigher
+            ? {
+                sx: {
+                  width: 300,
+                  flexShrink: 0,
+                  [`& .MuiDrawer-paper`]: {
+                    width: 300,
+                    boxSizing: "border-box",
+                  },
+                },
+              }
+            : {
+                sx: {
+                  width: "100%",
+                },
+              },
+        }}
+      >
+        <Stack
+          sx={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "0.4rem",
+          }}
+        >
+          <Stack direction="row" spacing={2} alignItems="center">
+            <img src="/logo-no-text.png" height="100%" width="50rem" />
+            <Typography
+              sx={{
+                fontFamily: "'Instrument Serif', serif",
+                fontSize: "1.8rem",
+                letterSpacing: "-0.02em",
+              }}
+            >
+              Homehive
+            </Typography>
+          </Stack>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === "rtl" ? (
+              <ChevronRightRounded />
+            ) : (
+              <ChevronLeftRounded />
+            )}
+          </IconButton>
+        </Stack>
+        <Divider />
+        <List
+          sx={{ width: "100%" }}
+          component="nav"
+          aria-labelledby="nested-list-subheader"
+        >
+          {MainAppRoutes.map(
+            ({ id, label, icon, path, requiredFlags, config }) => {
+              const isRouteValid = isValidFeatureFlagsForRoutes(
+                authorizedServerLevelFeatureFlags(),
+                requiredFlags,
+              );
+              if (!isRouteValid) return null;
+
+              const validRoles = config?.enabledForRoles || [];
+              if (validRoles.length > 0 && !validRoles.includes(user?.role))
+                return null;
+
+              const requiresLogin = Boolean(config?.isLoggedInFeature);
+              if (requiresLogin && !user?.uid) return null;
+
+              let childRoutes = [];
+              if (path.startsWith(MainInvoiceAppRouteUri)) {
+                childRoutes = buildChildrenRoutes(InvoiceAppRoutes, user);
+              } else if (path.startsWith(MainRentAppRouteUri)) {
+                childRoutes = buildChildrenRoutes(RentalAppRoutes, user);
+              } else if (path.startsWith(MainEsignAppRouteUri)) {
+                childRoutes = buildChildrenRoutes(EsignAppRoutes, user);
+              }
+
+              if (childRoutes.length > 0) {
+                return (
+                  <NavigationGroup
+                    key={id}
+                    label={label}
+                    icon={icon}
+                    pathname={pathname}
+                    theme={theme}
+                    navigate={handleMenuItemClick}
+                    childrenRoutes={filterAuthorizedRoutesForNavBar(
+                      childRoutes,
+                    )}
+                  />
+                );
+              }
+
+              return (
+                config?.displayInNavBar && (
+                  <ListItemButton
+                    key={id}
+                    selected={pathname === path}
+                    onClick={() => handleMenuItemClick(path)}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        color: pathname === path && theme.palette.primary.main,
+                      }}
+                    >
+                      {icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={label}
+                      slotProps={{
+                        primary: {
+                          variant: "subtitle2",
+                        },
+                      }}
+                    />
+                  </ListItemButton>
+                )
+              );
+            },
+          )}
+        </List>
+      </Drawer>
+    </Stack>
+  );
+}

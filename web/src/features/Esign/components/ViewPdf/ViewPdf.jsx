@@ -1,0 +1,25 @@
+import React from "react";
+
+import { Stack } from "@mui/material";
+
+const ViewPdf = ({ containerRef, activeSigner, setScrollTop }) => {
+  return (
+    <Stack
+      ref={containerRef}
+      onScroll={(e) => setScrollTop(e.currentTarget.scrollTop)}
+      sx={{
+        height: "800px",
+        overflow: "auto",
+        // width: "50%",
+        borderRadius: 1,
+        border: "1px solid #ccc",
+        display: "flex",
+        flexDirection: "column",
+        cursor: activeSigner ? "crosshair" : "default",
+        userSelect: "none",
+      }}
+    />
+  );
+};
+
+export default ViewPdf;

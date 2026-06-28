@@ -1,0 +1,188 @@
+import React, { useEffect } from "react";
+
+import { matchPath, useLocation, useNavigate } from "react-router-dom";
+
+import { MenuOutlined } from "@mui/icons-material";
+import {
+  AppBar,
+  Button,
+  IconButton,
+  Stack,
+  Toolbar,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import CustomSnackbar from "common/CustomSnackbar";
+import { DefaultTourStepsMapperObj } from "common/TourSteps";
+import { HomeRouteUri, fetchLoggedInUser } from "common/utils";
+import { useSendEmailMutation } from "features/Api/externalIntegrationsApi";
+import { useLogoutMutation } from "features/Api/firebaseUserApi";
+import { useRetrieveInvoiceDetails } from "features/Invoice/hooks/useRetrieveInvoiceDetails";
+import MenuOptions from "features/Layout/components/NavBar/MenuOptions";
+import { generateInvoiceHTML, retrieveTourKey } from "features/Layout/utils";
+import { isFeatureEnabled } from "features/Rent/utils";
+
+export default function AppToolbar({
+  currentUri,
+  currentRoute,
+  currentThemeIdx,
+  setCurrentThemeIdx,
+  handleDrawerOpen,
+  handleDrawerClose,
+  setDialog,
+}) {
+  const theme = useTheme();
+  const location = useLocation();
+
+  const navigate = useNavigate();
+  const user = fetchLoggedInUser();
+
+  const smallFormFactor = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const [sendEmail, sendEmailResult] = useSendEmailMutation();
+
+  const [logout, { isSuccess: isLogoutSuccess, isLoading: isLogoutLoading }] =
+    useLogoutMutation();
+
+  const {
+    data,
+    recieverInfo,
+    draftInvoiceHeader,
+    draftInvoiceStatusLabel,
+    draftRecieverUserEmailAddress,
+    isDisabled,
+  } = useRetrieveInvoiceDetails();
+
+  const currentSubRoute = currentRoute?.element.props?.routes?.find((route) =>
+    matchPath(route.routeUri, location.pathname),
+  );
+  const showHelp =
+    currentRoute.config.displayHelpSelector &&
+    currentSubRoute?.config?.displayHelpSelector;
+  const showPrint =
+    currentRoute.config.displayPrintSelector &&
+    currentSubRoute?.config?.displayPrintSelector;
+
+  const isSendEmailFeatureEnabled = isFeatureEnabled("sendEmail");
+  const isSplashPage = currentUri === HomeRouteUri;
+
+  const handleSendEmail = () => {
+    sendEmail({
+      to: draftRecieverUserEmailAddress,
+      subject: draftInvoiceHeader
+        ? `Invoice Details - ${draftInvoiceHeader}`
+        : "Invoice Details",
+      text: "Please view your attached invoice.",
+      html: generateInvoiceHTML(recieverInfo, data, draftInvoiceStatusLabel),
+    });
+  };
+
+  const handleHelp = () => {
+    const key = retrieveTourKey(currentUri, "property");
+    const draftDialogTitle = DefaultTourStepsMapperObj[key]?.element;
+
+    setDialog({
+      title: draftDialogTitle,
+      label: "Help and Support",
+      type: "HELP",
+      display: true,
+      showWatermark: false,
+    });
+
+    !smallFormFactor && handleDrawerOpen();
+  };
+
+  const handlePrint = () => {
+    const draftDialogTitle =
+      "Verify all information is correct before proceeding to print. Press print when ready.";
+
+    setDialog({
+      title: draftDialogTitle,
+      label: "Verify Information",
+      type: "PRINT",
+      display: true,
+      showWatermark: false,
+    });
+
+    handleDrawerClose();
+  };
+
+  const changeTheme = (_, currentThemeIdx) => {
+    if (Number(currentThemeIdx) === 0) {
+      localStorage.setItem("theme", 1);
+
+      setCurrentThemeIdx(1);
+      return;
+    }
+
+    localStorage.setItem("theme", 0);
+    setCurrentThemeIdx(0);
+  };
+
+  useEffect(() => {
+    if (isLogoutSuccess) {
+      navigate(`/?refresh=${Date.now()}`);
+    }
+  }, [isLogoutLoading]);
+
+  return (
+    <AppBar elevation={0} sx={{ padding: "0.30rem 0rem" }} className="no-print">
+      <Toolbar>
+        <Stack
+          direction="row"
+          spacing={2}
+          alignItems="center"
+          sx={{ flexGrow: 1 }}
+        >
+          {!isSplashPage ? (
+            <IconButton onClick={handleDrawerOpen}>
+              <MenuOutlined />
+            </IconButton>
+          ) : null}
+          <Typography
+            sx={{
+              fontFamily: "'Instrument Serif', serif",
+              fontSize: "1.8rem",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            Homehive
+          </Typography>
+        </Stack>
+        <Stack direction="row" spacing={1} alignItems="center">
+          {user?.uid && (
+            <Tooltip title="logout">
+              <Button variant="outlined" size="small" onClick={() => logout()}>
+                Logout
+              </Button>
+            </Tooltip>
+          )}
+          <MenuOptions
+            showPrint={showPrint}
+            handleHelp={handleHelp}
+            handlePrint={handlePrint}
+            handleSendEmail={handleSendEmail}
+            handleTheme={() => changeTheme("", currentThemeIdx)}
+            isEmailEnabled={isSendEmailFeatureEnabled} // email feature check
+            isDisabled={isDisabled} // valid data check
+            isLightTheme={Number(currentThemeIdx) === 1}
+            showHelpAndSupport={showHelp}
+            isSendEmailLoading={sendEmailResult.isLoading}
+          />
+        </Stack>
+      </Toolbar>
+      <CustomSnackbar
+        showSnackbar={sendEmailResult.isSuccess || sendEmailResult.isError}
+        setShowSnackbar={() => {}}
+        severity={sendEmailResult.isSuccess ? "success" : "error"}
+        title={
+          sendEmailResult.isSuccess
+            ? "Email sent successfully. Check spam if necessary."
+            : "Error sending email."
+        }
+      />
+    </AppBar>
+  );
+}

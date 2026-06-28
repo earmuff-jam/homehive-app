@@ -1,0 +1,697 @@
+import React from "react";
+
+import { Box, Typography } from "@mui/material";
+import {
+  EditInvoiceRouteUri,
+  EsignAppFaqRouteUri,
+  InvoiceAppFaqRouteUri,
+  InvoiceDashboardRouteUri,
+  MainEsignAppRouteUri,
+  MainInvoiceAppRouteUri,
+  MainRentAppRouteUri,
+  PropertiesReportingRouteUri,
+  PropertiesRouteUri,
+  PropertyRouteUri,
+  RecieverInforamtionRouteUri,
+  RentAppFaqRouteUri,
+  RentalRouteUri,
+  SenderInforamtionRouteUri,
+  SettingsRouteUri,
+  ViewEsignRouteUri,
+  ViewInvoiceRouteUri,
+  createHelperSentences,
+} from "common/utils";
+
+/**
+ * ViewPdfHelpSteps
+ *
+ * User helpful steps in the view pdf page.
+ */
+const ViewPdfHelpSteps = [
+  {
+    element:
+      "View created pdf from here. If you do not have any pdf to print, navigate to 'Edit Invoice' to create new invoices.",
+  },
+  {
+    element:
+      "Use options to help navigate or perform certain actions on specific pages. Such as Sending Email, Printing etc.",
+  },
+];
+
+/**
+ * EditPdfHelpSteps
+ *
+ * User helpful steps in the edit invoice / pdf page. This is where the users can create new invoices or update existing invoices.
+ */
+const EditPdfHelpSteps = [
+  {
+    element:
+      "Create or update a selected invoice. Invoices created are temporarily stored in the device so users can retrieve it easily.",
+  },
+  {
+    element:
+      "Fill in the element of the invoice. Sample: Rent for the month of January. ",
+  },
+  {
+    element:
+      "Invoice captions are more like a sub heading. Emphasize on what you expect. Sample: Invoice Due every 3rd of month",
+  },
+  {
+    element:
+      "Add additional notes that would be added beneath the Invoice. This is similar to footnote. Sample: No Additional payment due at this time.",
+  },
+  {
+    element: "Select the start date and the end date for the selected invoice.",
+  },
+  {
+    element:
+      "Invoice Header is the small section on top of the invoice. This is used to give emphasis to the invoice. Sample: Rent Details.",
+  },
+  {
+    element:
+      "Add the standard tax rate. If you are unsure leave it at 0. Keep in mind that this does not include tax during calculations.",
+  },
+  {
+    element:
+      "Select the status of the invoice. This watermark will transpond on the actual paper. Choose between various options of your invoice.",
+  },
+  {
+    element:
+      "Add Item as a line item in the invoice. Each line item is customized and includes its own element and caption to allow users to provide more information.",
+  },
+  {
+    element:
+      "After meeting the requirements and adding sufficient line items to your liking, press 'Save' button. Navigate to 'View Invoice' to view the look and feel of your invoice.",
+  },
+];
+
+/**
+ * SenderInfoHelpSteps
+ *
+ * User helpful steps in the sender info page. This is where you can upload information about the sender of the invoice. Leaving this empty
+ * should render no salutation in the view page.
+ */
+const SenderInfoHelpSteps = [
+  {
+    element:
+      "Sender biographic information. Store details for selected sender. Sender is the person who is requesting to send the invoice.",
+  },
+];
+
+/**
+ * RecieverInfoHelpSteps
+ *
+ * User helpful steps in the reciever info page. This is where you can upload information about the reciever of the invoice. Leaving this
+ * empty should render no salutation in the view page.
+ */
+const RecieverInfoHelpSteps = [
+  {
+    element:
+      "Reciever biographic information. Store details for selected reciever. Reciever is the person who will be recieving this invoice.",
+  },
+];
+
+/**
+ * DashboardHelpSteps
+ *
+ * User helpful steps in the dashboard page. This is where users can view a breakdown of how their invoice performed with a help of couple
+ * of widgets.
+ */
+const DashboardHelpSteps = [
+  {
+    element:
+      "Welcome to your local dashboard view. Your most recent invoice data characteristics are displayed here. This is your standard layout. Press the 'Edit' button to edit or remove a selected widget.",
+  },
+  {
+    element:
+      "Select '+' to add widgets in the dashboard. You can add multiple of the same widgets as well.",
+  },
+  {
+    element: "Reset your dashboard to remove clutter.",
+  },
+  {
+    element:
+      "View your added invoices here. If you do not have widgets, add widgets and restart the tutorial to proceed.",
+  },
+  {
+    element:
+      "This is the Invoice Timeline Chart Widget. This displays the posted payment and timeline of the posted payment.",
+  },
+  {
+    element:
+      "This is the Collected Tax and Totals Widget. This displays the monetary amount collected and taxes collected. View timeline chart if many invoices are selected.",
+  },
+  {
+    element:
+      "This is the Items and Service Type Widget. This displays the type of item the invoice was created for.",
+  },
+  {
+    element:
+      "This is the Item Details Table. We can view details about the imported invoices in the list form. If you have many invoices, you can view them in a list form.",
+  },
+];
+
+/**
+ * MyPropertiesListHelpSteps
+ *
+ * User helpful steps for the properties list page.
+ */
+const MyPropertiesListHelpSteps = [
+  {
+    element:
+      "View a list of properties that are managed / owned by you. If you don't have a property 'Add Property' to begin.",
+  },
+  {
+    element: "Create a new property via this 'Add Property' button.",
+  },
+  {
+    element: "Remove a property with a simple click of this delete button.",
+  },
+  {
+    element:
+      "View a quick overview of tenant details if you have them. If you do not have tenant details associate tenants before proceeding.",
+  },
+  {
+    element:
+      "View current rent payment status and the next payment due date. Use Quick Connect to quickly send invoices, reminders or even lease renewal templates.",
+  },
+  {
+    element: "Click on this property to dive deeper into that property.",
+  },
+];
+
+/**
+ * MyPropertyHelpSteps
+ *
+ * User helpful steps for viewing a single property page.
+ */
+const MyPropertyHelpSteps = [
+  {
+    element: "View more details about your property.",
+  },
+  {
+    element:
+      "View brief overview of your home including address, total available rental bedrooms, occupancy rate and monthly rental amount including additional charges",
+  },
+  {
+    element: "View a financial projection of your home.",
+  },
+  {
+    element:
+      "View details about the property owner. You can email the property owner directly if you are a tenant.",
+  },
+  {
+    element: "View property details and the state it was last updated in.",
+  },
+  {
+    element: "Perform quick actions against your property such as Editing it.",
+  },
+  {
+    element: "View all payment summaries made the tenant for this property.",
+  },
+  {
+    element: "View a list of all the active tenants for this property.",
+  },
+];
+
+/**
+ * SettingsHelpSteps
+ *
+ * User helpful steps for viewing user settings
+ */
+const SettingsHelpSteps = [
+  {
+    element: "View your account related information here.",
+  },
+  {
+    element: "View or edit your biographic information here.",
+  },
+  {
+    element:
+      "Navigate to templates, and view all associated templates here. You can customize templates to your liking here. You can even use html if you would like. Please note that using incorrect values will not display the html correctly.",
+  },
+  {
+    element:
+      "Connect with our 3rd party entities for a smoother rental experience. Use 'Stripe' for account management and custom Esign for document signing. Property owners must go through user verification for KYC Compliance in Stripe. Esign users are verified via their google account.",
+  },
+];
+
+/**
+ * RentalHelpSteps
+ *
+ * User helpful steps for viewing rental page
+ */
+const RentalHelpSteps = [
+  {
+    element: "View more details about the current property you rent.",
+  },
+  {
+    element:
+      "View brief overview of your rental home including address, total available rental bedrooms, occupancy rate and monthly rental amount including additional charges",
+  },
+  {
+    element: "View a financial projection of your rental home.",
+  },
+  {
+    element:
+      "View details about the property owner. Email the property owner if you are a tenant easily. If E-account services are active, pay rent using such services. Eg, stripe.",
+  },
+  {
+    element: "View property details and the state it was last updated in.",
+  },
+  {
+    element:
+      "View more details about the renting property. Chat with your property owner or manager for NON-EMERGENCY issues only. Please dial 911 for life threatening issues. ( Feature TBD )",
+  },
+  {
+    element:
+      "View all documents that are available between you and the property owner.",
+  },
+  {
+    element: "View all payment summaries made by you",
+  },
+];
+
+/**
+ * EsignHelpSteps
+ *
+ * User helpful steps for viewing esign page
+ */
+const EsignHelpSteps = [
+  {
+    element:
+      "Welcome to Electronic Signatures. Here you can learn how to create valid and functional electronic signatures that come packaged with a audit trails for document security. Before we continue, please understand Landlord - tenant laws may vary by city, state, and property type. This platform provides document automation tools, not legal services. You are fully responsible for reviewing, approving, and ensuring the legality and enforceability of any document you create, upload, send, or sign through the service.",
+  },
+  {
+    element:
+      "Purchase non refundable tokens to send 'envelope'. Envelopes are ready to sign documents that cannot be unsent, hence tokens are non-refundable. Please ensure all fields are correctly filled to the best of your knowledge before sending the 'envelope' for electronic signature. We use stripe as a service to support the purchase of any non-refundable tokens via any credit / debit card.",
+  },
+  {
+    element:
+      "Upload custom fillable pdf form to proceed with the electronic signature. You may use any pdf document of choice, however it is your responsibility to ensure that the document is filled correctly and valid signatures are placed within the boundaries of the uploaded document. Failure to do so, will result in an incorrect submission of pdf document, which will cost non-refundable tokens.",
+  },
+  {
+    element:
+      "Upto four free documents are provided free of charge to use for electronic signatures. However, please note you are fully responsible for reviewing, approving, and ensuring the legality and enforceability of any document you create, upload, send, or sign through the service. For the purposes of this demonstration, please select a default provided template for now. Press the next arrow when done.",
+  },
+  {
+    element:
+      "Once a document is uploaded into the screen, you will be provided with options to add upto four signers along with a creator. Each signer MUST have their own email address and full name which can be edited or updated. For the purposes of this demonstration, please select creator to proceed. Press the next arrow when done.",
+  },
+  {
+    element:
+      "Toggle between signature and date to place respective boxes in the pdf. Select Signature to place signature boxes. Select Date to place date signed boxes in the document.",
+  },
+  {
+    element:
+      "Add / Remove / Toggle between creator and signers to create signature boxes or date signed boxes respectively. The system allows color codes to help you differentiate between various signers for ease of use.",
+  },
+  {
+    element:
+      "Select 'Prepare Esign' when you are ready to send a document. A dialog box will appear requesting you to confirm your actions. If the contents of the document does not match the required format, an alert will be populated however, it does not prevent you from submitting the documents. Please note you are fully responsible for reviewing, approving, and ensuring the legality and enforceability of any document you create, upload, send, or sign through the service.",
+  },
+];
+
+const ReportingAndStatisticsSteps = [
+  {
+    element:
+      "View details about your all active properties. You can also find your total monthly rental income across all properties, average cost per sq ft, and total security deposits collected across all properties.",
+  },
+  {
+    element:
+      "View your projected rental income in average across all properties. Projected rental income is a linear representation of what the rent would look like in the future, although this can change due to various other factors.",
+  },
+  {
+    element:
+      "View your total collected rents across all properties in a graphical format. Hover over each diagram to view associated collected rent for that specific property.",
+  },
+  {
+    element:
+      "Select a valid property to continue the tour for learning about property statistics.",
+  },
+  {
+    element:
+      "View details about vacancy and occupancy about your properties. View your current vacancy streak to know how long has your property stayed vacant. Occupancy rate shows the occupied status of your property. If rentees do not belong to a Single Occupancy Room (SoR) type, then the occupied status will always display 100% when occupied. Also displays average days it took to fill the property, and the total number of days the property stayed vacant since this year.",
+  },
+  {
+    element:
+      "View details about your ongoing lease. View when your current lease expires or the current tenure of the selected tenant. You can also view if the same tenant was renewed at the selected property or otherwise. Finally, you can also view the average length of lease for each property.",
+  },
+  {
+    element:
+      "View details about your collected rents. You can view how often your rents are made on time within the last year. If rent due was late, you can view how late the rental payments were made out. Please note that grace period is also taken into consideration here since rents paid within the grace period is not considered late. You can also view any outstanding balance if remaining and view the cost to rent ratio within the selected property.",
+  },
+  {
+    element:
+      "View details about your maintenance requests. You can view your open requests, average resolution time, Total spent on maintenance for the current year and also the maintenance/rent ratio based on the annual rental income. The average resolution time is the average of the time from when the maintenance was created to the time when it was marked as completed. The maintenance/rent ratio does not take additional rent into account, rather just takes the principal rent income into account.",
+  },
+  {
+    element:
+      "View the top maintenance issues related to the selected property.",
+  },
+];
+
+/**
+ * derieveTourSteps
+ *
+ * used to build the necessary object from the steps to render the tour correctly.
+ * @param {Array} staticSteps - an array of steps
+ * @param {String} prefix - the prefix string to attach to the selector. Used to associate with certain page.
+ * @returns Array of steps with combined values of id, selector and content to build the tour properly.
+ */
+const derieveTourSteps = (staticSteps, prefix) => {
+  return staticSteps.map(({ element }, index) => ({
+    id: index,
+    selector: `[data-tour="${prefix}-${index}"]`,
+    content: (
+      <Typography
+        variant="subtitle2"
+        sx={{ padding: "0.2rem" }}
+        padding="0.2rem"
+      >
+        {element}
+      </Typography>
+    ),
+  }));
+};
+
+/**
+ * DisplaySubHelperSection
+ *
+ * used to populate the faq and what's new section for the invoicer
+ */
+const DisplaySubHelperSection = () => {
+  const handleClick = (to = "") => {
+    if (to) {
+      window.location.href = to;
+      return;
+    } else {
+      const existingLocation = window.location.href;
+      if (existingLocation.includes(MainRentAppRouteUri)) {
+        window.location.href = RentAppFaqRouteUri;
+        return;
+      } else if (existingLocation.includes(MainInvoiceAppRouteUri)) {
+        window.location.href = InvoiceAppFaqRouteUri;
+        return;
+      } else if (existingLocation.includes(MainEsignAppRouteUri)) {
+        window.location.href = EsignAppFaqRouteUri;
+        return;
+      } else {
+        return;
+      }
+    }
+  };
+
+  return (
+    <Typography variant="caption">
+      &nbsp;View&nbsp;
+      <Box
+        component="span"
+        onClick={() => handleClick("/notes")}
+        sx={{
+          color: "primary.main",
+          cursor: "pointer",
+          textDecoration: "underline",
+        }}
+        role="link"
+        tabIndex={0}
+      >
+        Release Notes&nbsp;
+      </Box>
+      to stay up to date with all the latest features. Stuck in a problem?
+      Visit&nbsp;
+      <Box
+        component="span"
+        onClick={() => handleClick()}
+        sx={{
+          color: "primary.main",
+          cursor: "pointer",
+          textDecoration: "underline",
+        }}
+        role="link"
+        tabIndex={0}
+      >
+        FAQ&nbsp;
+      </Box>
+      to view our frequently asked questions.
+    </Typography>
+  );
+};
+
+/**
+ * DefaultTourStepsMapperObj
+ *
+ * Mapper object to build out the tour. This tool creates start and end pages for tour based on
+ * routes of the application. Based on where the user is within the app, the tour steps are created / updated
+ * and are displayed for the user.
+ */
+export const DefaultTourStepsMapperObj = {
+  [ViewInvoiceRouteUri]: {
+    element: (
+      <>
+        {createHelperSentences("view / print", "invoices")}
+        {DisplaySubHelperSection()}
+      </>
+    ),
+    start: 0,
+    end: ViewPdfHelpSteps.length,
+  },
+  [EditInvoiceRouteUri]: {
+    element: (
+      <>
+        {createHelperSentences("edit / update", "invoices")}
+        {DisplaySubHelperSection()}
+      </>
+    ),
+    start: ViewPdfHelpSteps.length,
+    end: ViewPdfHelpSteps.length + EditPdfHelpSteps.length,
+  },
+  [SenderInforamtionRouteUri]: {
+    element: (
+      <>
+        {createHelperSentences("edit / update", "sender information")}
+        {DisplaySubHelperSection()}
+      </>
+    ),
+    start: ViewPdfHelpSteps.length + EditPdfHelpSteps.length,
+    end:
+      ViewPdfHelpSteps.length +
+      EditPdfHelpSteps.length +
+      SenderInfoHelpSteps.length,
+  },
+  [RecieverInforamtionRouteUri]: {
+    element: (
+      <>
+        {createHelperSentences("edit / update ", "reciever information")}
+        {DisplaySubHelperSection()}
+      </>
+    ),
+    start:
+      ViewPdfHelpSteps.length +
+      EditPdfHelpSteps.length +
+      SenderInfoHelpSteps.length,
+    end:
+      ViewPdfHelpSteps.length +
+      EditPdfHelpSteps.length +
+      SenderInfoHelpSteps.length +
+      RecieverInfoHelpSteps.length,
+  },
+  [InvoiceDashboardRouteUri]: {
+    element: (
+      <>
+        {createHelperSentences("interpret", "the dashboard")}
+        {DisplaySubHelperSection()}
+      </>
+    ),
+    start:
+      ViewPdfHelpSteps.length +
+      EditPdfHelpSteps.length +
+      SenderInfoHelpSteps.length +
+      RecieverInfoHelpSteps.length,
+    end:
+      ViewPdfHelpSteps.length +
+      EditPdfHelpSteps.length +
+      SenderInfoHelpSteps.length +
+      RecieverInfoHelpSteps.length +
+      DashboardHelpSteps.length,
+  },
+  [SettingsRouteUri]: {
+    element: (
+      <>
+        {createHelperSentences(
+          "edit / update",
+          "your information and email templates",
+        )}
+        {DisplaySubHelperSection()}
+      </>
+    ),
+    start:
+      ViewPdfHelpSteps.length +
+      EditPdfHelpSteps.length +
+      SenderInfoHelpSteps.length +
+      RecieverInfoHelpSteps.length +
+      DashboardHelpSteps.length,
+    end:
+      ViewPdfHelpSteps.length +
+      EditPdfHelpSteps.length +
+      SenderInfoHelpSteps.length +
+      RecieverInfoHelpSteps.length +
+      DashboardHelpSteps.length +
+      SettingsHelpSteps.length,
+  },
+  [RentalRouteUri]: {
+    element: (
+      <>
+        {createHelperSentences("view", "your rental property details")}
+        {DisplaySubHelperSection()}
+      </>
+    ),
+    start:
+      ViewPdfHelpSteps.length +
+      EditPdfHelpSteps.length +
+      SenderInfoHelpSteps.length +
+      RecieverInfoHelpSteps.length +
+      DashboardHelpSteps.length +
+      SettingsHelpSteps.length,
+    end:
+      ViewPdfHelpSteps.length +
+      EditPdfHelpSteps.length +
+      SenderInfoHelpSteps.length +
+      RecieverInfoHelpSteps.length +
+      DashboardHelpSteps.length +
+      SettingsHelpSteps.length +
+      RentalHelpSteps.length,
+  },
+  [PropertyRouteUri]: {
+    element: (
+      <>
+        {createHelperSentences("view", "your property details")}
+        {DisplaySubHelperSection()}
+      </>
+    ),
+    start:
+      ViewPdfHelpSteps.length +
+      EditPdfHelpSteps.length +
+      SenderInfoHelpSteps.length +
+      RecieverInfoHelpSteps.length +
+      DashboardHelpSteps.length +
+      SettingsHelpSteps.length +
+      RentalHelpSteps.length,
+    end:
+      ViewPdfHelpSteps.length +
+      EditPdfHelpSteps.length +
+      SenderInfoHelpSteps.length +
+      RecieverInfoHelpSteps.length +
+      DashboardHelpSteps.length +
+      SettingsHelpSteps.length +
+      RentalHelpSteps.length +
+      MyPropertyHelpSteps.length,
+  },
+  [PropertiesRouteUri]: {
+    element: (
+      <>
+        {createHelperSentences("view", "your property details")}
+        {DisplaySubHelperSection()}
+      </>
+    ),
+    start:
+      ViewPdfHelpSteps.length +
+      EditPdfHelpSteps.length +
+      SenderInfoHelpSteps.length +
+      RecieverInfoHelpSteps.length +
+      DashboardHelpSteps.length +
+      SettingsHelpSteps.length +
+      RentalHelpSteps.length +
+      MyPropertyHelpSteps.length,
+    end:
+      ViewPdfHelpSteps.length +
+      EditPdfHelpSteps.length +
+      SenderInfoHelpSteps.length +
+      RecieverInfoHelpSteps.length +
+      DashboardHelpSteps.length +
+      SettingsHelpSteps.length +
+      RentalHelpSteps.length +
+      MyPropertyHelpSteps.length +
+      MyPropertiesListHelpSteps.length,
+  },
+  [ViewEsignRouteUri]: {
+    element: (
+      <>
+        {createHelperSentences("edit or send", "electronic signature")}
+        {DisplaySubHelperSection()}
+      </>
+    ),
+    start:
+      ViewPdfHelpSteps.length +
+      EditPdfHelpSteps.length +
+      SenderInfoHelpSteps.length +
+      RecieverInfoHelpSteps.length +
+      DashboardHelpSteps.length +
+      SettingsHelpSteps.length +
+      RentalHelpSteps.length +
+      MyPropertyHelpSteps.length +
+      MyPropertiesListHelpSteps.length,
+    end:
+      ViewPdfHelpSteps.length +
+      EditPdfHelpSteps.length +
+      SenderInfoHelpSteps.length +
+      RecieverInfoHelpSteps.length +
+      DashboardHelpSteps.length +
+      SettingsHelpSteps.length +
+      RentalHelpSteps.length +
+      MyPropertyHelpSteps.length +
+      MyPropertiesListHelpSteps.length +
+      EsignHelpSteps.length,
+  },
+  [PropertiesReportingRouteUri]: {
+    element: (
+      <>
+        {createHelperSentences("view", "reports about your active properties")}
+        {DisplaySubHelperSection()}
+      </>
+    ),
+    start:
+      ViewPdfHelpSteps.length +
+      EditPdfHelpSteps.length +
+      SenderInfoHelpSteps.length +
+      RecieverInfoHelpSteps.length +
+      DashboardHelpSteps.length +
+      SettingsHelpSteps.length +
+      RentalHelpSteps.length +
+      MyPropertyHelpSteps.length +
+      MyPropertiesListHelpSteps.length +
+      EsignHelpSteps.length,
+    end:
+      ViewPdfHelpSteps.length +
+      EditPdfHelpSteps.length +
+      SenderInfoHelpSteps.length +
+      RecieverInfoHelpSteps.length +
+      DashboardHelpSteps.length +
+      SettingsHelpSteps.length +
+      RentalHelpSteps.length +
+      MyPropertyHelpSteps.length +
+      MyPropertiesListHelpSteps.length +
+      EsignHelpSteps.length +
+      ReportingAndStatisticsSteps.length,
+  },
+};
+
+/**
+ * GeneratedTourSteps
+ *
+ * Generates tour steps based on router pathname and its criteria. Prefix the page with the associated
+ * prefix string below and co-ordinate with data-tour options and props in each component.
+ */
+export const GeneratedTourSteps = [
+  ...derieveTourSteps(ViewPdfHelpSteps, "view-pdf"),
+  ...derieveTourSteps(EditPdfHelpSteps, "edit-pdf"),
+  ...derieveTourSteps(SenderInfoHelpSteps, "sender"),
+  ...derieveTourSteps(RecieverInfoHelpSteps, "reciever"),
+  ...derieveTourSteps(DashboardHelpSteps, "dashboard"),
+  ...derieveTourSteps(SettingsHelpSteps, "settings"),
+  ...derieveTourSteps(RentalHelpSteps, "rental"),
+  ...derieveTourSteps(MyPropertyHelpSteps, "property"),
+  ...derieveTourSteps(MyPropertiesListHelpSteps, "properties"),
+  ...derieveTourSteps(EsignHelpSteps, "esign"),
+  ...derieveTourSteps(ReportingAndStatisticsSteps, "report-stats"),
+];
